@@ -1,0 +1,34 @@
+{
+  "name": "sister_wars",
+  "description": "A game about two sisters constantly at war with each other.",
+  "version": "1.0.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonmagic/sister_wars"
+  },
+  "author": "jonmagic",
+  "license": "MIT",
+  "licenseUrl": "https://choosealicense.com/licenses/mit/",
+  "bugs": {
+    "url": "https://github.com/jonmagic/sister_wars/issues"
+  },
+  "homepage": "https://github.com/jonmagic/sister_wars#readme",
+  "scripts": {
+    "dev": "ts-node --esm log.ts dev & vite --config vite/config.dev.ts",
+    "build": "ts-node --esm log.ts build & vite build --config vite/config.prod.ts",
+    "dev-nolog": "vite --config vite/config.dev.ts",
+    "build-nolog": "vite build --config vite/config.prod.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "terser": "^5.37.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.6"
+  },
+  "dependencies": {
+    "phaser": "^3.87.0"
+  }
+}
