@@ -1,9 +1,8 @@
-
 interface ActiveXObject {
-  new (progID: string): any
+  new (progID: string): unknown
 }
 
-declare var ActiveXObject: {
+declare const ActiveXObject: {
   prototype: ActiveXObject
   new (progID: string): ActiveXObject
-};
+}
