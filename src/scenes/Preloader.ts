@@ -27,6 +27,15 @@ export class Preloader extends Scene {
     this.load.setPath('assets')
 
     this.load.image('logo', 'logo.png')
+
+    // New: Load your character states
+    this.load.spritesheet('player01', 'player01.png', {
+      frameWidth: 128,
+      frameHeight: 128,
+    })
+
+    // New: Load your block
+    this.load.image('block', 'block.png')
   }
 
   create() {
@@ -35,5 +44,29 @@ export class Preloader extends Scene {
 
     // Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
     this.scene.start('MainMenu')
+
+    this.anims.create({
+      key: 'walk-right',
+      frames: this.anims.generateFrameNumbers('player01', { start: 0, end: 3 }),
+      frameRate: 4,
+      repeat: -1,
+    })
+
+    this.anims.create({
+      key: 'walk-left',
+      frames: this.anims.generateFrameNumbers('player01', { start: 4, end: 7 }),
+      frameRate: 4,
+      repeat: -1,
+    })
+
+    this.anims.create({
+      key: 'stand-right',
+      frames: this.anims.generateFrameNumbers('player01', { start: 8, end: 8 }),
+    })
+
+    this.anims.create({
+      key: 'stand-left',
+      frames: this.anims.generateFrameNumbers('player01', { start: 9, end: 9 }),
+    })
   }
 }
