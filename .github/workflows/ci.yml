@@ -12,26 +12,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x, 18.x]  # Test against multiple Node.js versions
-
     steps:
-      # 1. Check out the repository
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # 2. Set up Node.js
-      - name: Set up Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'  # Caches npm dependencies
+          node-version: '18'
 
-      # 3. Install dependencies
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm install
 
-      # 4. Run type-check
-      - name: Run TypeScript type-check
+      - name: Run typecheck
         run: npm run type-check
+
+      - name: Run Lint
+        run: npm run lint
+
+      - name: Check Formatting
+        run: npm run format:check
+
+      - name: Build
+        run: npm run build
