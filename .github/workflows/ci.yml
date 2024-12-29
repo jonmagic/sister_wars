@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]  # Adjust the branch name if different
+    branches: [main] # Adjust the branch name if different
   pull_request:
-    branches: [ main ]
+    branches: [main]
 permissions:
   contents: read
 
