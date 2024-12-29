@@ -1,0 +1,45 @@
+{
+  "name": "sister_wars",
+  "description": "A game about two sisters constantly at war with each other.",
+  "version": "1.0.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonmagic/sister_wars"
+  },
+  "author": "jonmagic",
+  "license": "MIT",
+  "licenseUrl": "https://choosealicense.com/licenses/mit/",
+  "bugs": {
+    "url": "https://github.com/jonmagic/sister_wars/issues"
+  },
+  "homepage": "https://github.com/jonmagic/sister_wars#readme",
+  "scripts": {
+    "dev": "vite --config vite/config.dev.ts",
+    "build": "vite build --config vite/config.prod.ts",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
+    "lint:fix": "eslint '**/*.{js,jsx,ts,tsx}' --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.17.0",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.2",
+    "@typescript-eslint/parser": "^8.18.2",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "terser": "^5.37.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.6"
+  },
+  "dependencies": {
+    "phaser": "^3.87.0"
+  }
+}
