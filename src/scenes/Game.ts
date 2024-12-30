@@ -3,137 +3,75 @@ import { Scene } from 'phaser'
 export class Game extends Scene {
   private player!: Phaser.Physics.Arcade.Sprite
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
-  private block!: Phaser.Physics.Arcade.Sprite
-
-  // Keep track of the last direction so we know which "stand" or "jump" anim to use
-  private lastDirection: 'left' | 'right' = 'right'
 
   constructor() {
     super('Game')
   }
 
   create() {
-    // 1) Background
-    this.cameras.main.setBackgroundColor(0x00ff00)
-    this.add.image(512, 384, 'background').setAlpha(0.5)
+    // 1) Set up the background color (sky blue)
+    this.cameras.main.setBackgroundColor(0x87ceeb)
 
-    // 2) Setup World bounds
-    this.physics.world.setBounds(0, 0, 1024, 768)
+    // 2) Add a kitchen wall background
+    this.add.sprite(512, 384, 'tile-wall-orange') // Adjust for your wall asset
 
-    // 3) Add a "floor" (invisible, static body)
-    const ground = this.add.rectangle(512, 760, 1024, 16, 0x00ff00, 0)
+    // 3) Add kitchen items
+    const kitchenItems = [
+      { key: 'refrigerator-stocked', x: 150, y: 450 },
+      { key: 'sink-and-drawer', x: 300, y: 450 },
+      { key: 'oven', x: 450, y: 450 },
+      { key: 'table-with-cloth', x: 600, y: 500 },
+      { key: 'blender', x: 200, y: 400 },
+      { key: 'kettle', x: 320, y: 400 },
+    ]
+
+    kitchenItems.forEach((item) => {
+      this.add.sprite(item.x, item.y, item.key).setScale(4)
+    })
+
+    // 4) Add a ground (invisible but collidable)
+    const ground = this.add.rectangle(512, 720, 1024, 32, 0x00ff00, 0)
     this.physics.add.existing(ground, true)
 
-    // 4) Create the player at left side
-    //    Use the sprite sheet ('player01') you loaded in Preloader, defaulting to frame 8 (stand-right).
-    this.player = this.physics.add.sprite(100, 600, 'player01', 8)
+    // 5) Create the player sprite and set up physics
+    this.player = this.physics.add.sprite(100, 600, 'idle_0')
+    this.player.setScale(4)
     this.player.setCollideWorldBounds(true)
     this.player.setBounce(0.1)
 
-    // 5) Create the block near the right side, up high
-    this.block = this.physics.add.sprite(850, 550, 'block')
-    this.block.setImmovable(true)
-    if (this.block.body instanceof Phaser.Physics.Arcade.Body) {
-      this.block.body.setAllowGravity(false)
-    }
-
-    // 6) Collisions
+    // 6) Add collision between the player and ground
     this.physics.add.collider(this.player, ground)
-    this.physics.add.collider(this.player, this.block, this.hitBlock, undefined, this)
 
-    // 7) Cursors for user input
+    // 7) Set up cursor keys for player input
     this.cursors = this.input.keyboard!.createCursorKeys()
 
-    // 8) Instruction text
-    this.add
-      .text(512, 50, 'Move → and jump ↑ to hit the block!', {
-        fontFamily: 'Arial',
-        fontSize: '24px',
-        color: '#ffffff',
-      })
-      .setOrigin(0.5)
+    // 8) Play the default idle animation
+    this.player.play('idle')
   }
 
   update() {
-    // A common approach:
-    // 1) Check if player is on the ground.
-    // 2) Move left or right if keys pressed.
-    // 3) Play appropriate walk / jump / stand animations.
-    // 4) Jump if Up is pressed and on the ground.
-
+    // Movement logic: left/right to walk, up to jump
     const onGround = this.player.body?.touching.down
 
     // Horizontal movement
     if (this.cursors.left.isDown) {
-      this.player.setVelocityX(-240)
-
-      // If on the ground, walk anim. If in the air, jump anim.
-      if (onGround) {
-        this.player.anims.play('walk-left', true)
-      } else {
-        this.player.anims.play('stand-left', true)
-      }
-
-      this.lastDirection = 'left'
+      this.player.setVelocityX(-150)
+      this.player.setFlipX(true) // Face left
+      this.player.play(onGround ? 'walk' : 'fall', true)
     } else if (this.cursors.right.isDown) {
-      this.player.setVelocityX(240)
-
-      if (onGround) {
-        this.player.anims.play('walk-right', true)
-      } else {
-        this.player.anims.play('stand-right', true)
-      }
-
-      this.lastDirection = 'right'
+      this.player.setVelocityX(150)
+      this.player.setFlipX(false) // Face right
+      this.player.play(onGround ? 'walk' : 'fall', true)
     } else {
-      // No left/right input
+      // No horizontal movement
       this.player.setVelocityX(0)
-
-      // If we're on the ground, stand in the last direction. If we're in the air, do jump anim.
-      if (onGround) {
-        if (this.lastDirection === 'left') {
-          this.player.anims.play('stand-left')
-        } else {
-          this.player.anims.play('stand-right')
-        }
-      } else {
-        if (this.lastDirection === 'left') {
-          this.player.anims.play('stand-left', true)
-        } else {
-          this.player.anims.play('stand-right', true)
-        }
-      }
+      this.player.play(onGround ? 'idle' : 'fall', true)
     }
 
-    // Jump
+    // Jumping logic
     if (this.cursors.up.isDown && onGround) {
-      this.player.setVelocityY(-400)
+      this.player.setVelocityY(-300)
+      this.player.play('jump', true)
     }
-  }
-
-  private hitBlock: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback = (obj1, obj2) => {
-    const p = obj1 as Phaser.Physics.Arcade.Sprite
-    const b = obj2 as Phaser.Physics.Arcade.Sprite
-
-    if (p.body && (p.body.blocked.up || p.body.touching.up)) {
-      // "Bump" the block
-      this.tweens.add({
-        targets: b,
-        y: b.y - 10,
-        duration: 50,
-        yoyo: true,
-      })
-
-      b.setTint(0xff0000)
-      this.levelComplete()
-    }
-  }
-
-  private levelComplete() {
-    // We’ll just go to GameOver for now,
-    // but you could show a "Level Complete" text or something else
-    this.time.delayedCall(1000, () => {
-      this.scene.start('GameOver')
-    })
   }
 }
